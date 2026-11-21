@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RUAS Faculty CV Screening — UGC / AICTE</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="rules.js"></script>
+  <script src="jszip.min.js"></script>
+  <script src="pdf.min.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-in">
+      <div>
+        <div class="kicker">Ramaiah University of Applied Sciences</div>
+        <h1>Faculty CV Screening Dashboard</h1>
+        <p class="sub">Eligibility screening against UGC 2018 and AICTE 2019 regulations · 🔒 CVs are processed only in your browser</p>
+      </div>
+      <nav class="tabs"><button class="tab on" data-tab="screen">Screening</button><button class="tab" data-tab="rules">Rules & sources</button></nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="pane-screen" class="pane">
+      <div class="card setup">
+        <div class="col">
+          <h2><span class="num">1</span> Post & discipline</h2>
+          <label>Discipline / regulation <select id="selRegime"></select></label>
+          <label>Post being screened <select id="selPost"></select></label>
+        </div>
+        <div class="col">
+          <h2><span class="num">2</span> Advertisement <small>(optional)</small></h2>
+          <label class="drop" id="adDrop"><input id="adFile" type="file" accept=".pdf,.docx,.txt" hidden /><b>Upload advertisement</b><span>for keyword / specialisation match</span></label>
+          <div id="adName" class="chip" hidden></div>
+        </div>
+        <div class="col">
+          <h2><span class="num">3</span> CVs</h2>
+          <label class="drop" id="cvDrop"><input id="cvFiles" type="file" multiple accept=".pdf,.docx,.txt" hidden /><b>Upload CVs</b><span>PDF · DOCX · TXT · up to 60</span></label>
+          <div id="cvCount" class="muted small"></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="btnAnalyze">Screen CVs</button>
+          <button class="btn accent" id="btnExport" disabled>Export Excel</button>
+          <button class="btn ghost" id="btnClear">Clear</button>
+          <span id="status" class="status"></span>
+        </div>
+      </div>
+
+      <div id="results" hidden>
+        <p class="rulenote" id="ruleNote"></p>
+        <div class="kpis" id="kpis"></div>
+        <div class="grid2">
+          <div class="card"><h2>Eligibility outcome</h2><div id="chartStatus" class="bars"></div></div>
+          <div class="card"><h2>Match with advertisement keywords</h2><div id="chartMatch" class="bars"></div></div>
+        </div>
+        <div class="card">
+          <div class="tblhead">
+            <h2>Candidates</h2>
+            <div class="seg" id="filters">
+              <button data-f="" class="on">All</button><button data-f="pass">✓ Eligible</button><button data-f="unknown">? Verify</button><button data-f="fail">✗ Not eligible</button>
+            </div>
+          </div>
+          <p class="muted small">Click a candidate to see each criterion, correct extracted details and re-check instantly.</p>
+          <div class="tablewrap">
+            <table id="tbl">
+              <thead><tr><th>Candidate</th><th>Qualifications</th><th>Exp. (yrs)</th><th>Journal pubs</th><th>Status for selected post</th><th>Highest eligible post</th><th>Ad match</th><th>Flags</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="disclaimer">⚖️ This is an automated screening aid. Text extraction from CVs can miss or misread details. Final eligibility must be decided by the scrutiny / selection committee against original certificates and the applicable regulations.</p>
+      </div>
+    </section>
+
+    <section id="pane-rules" class="pane" hidden>
+      <div class="card">
+        <h2>Regulations applied</h2>
+        <ul>
+          <li><b>UGC Regulations, 18 July 2018</b> on minimum qualifications for appointment of teachers in universities and colleges, with the <b>2nd Amendment, 2023</b>: NET/SET/SLET is the minimum for direct recruitment of Assistant Professors (Ph.D. optional from 1 July 2023; Ph.D. holders exempt).</li>
+          <li><b>AICTE Regulations, 1 March 2019</b> for teachers in technical institutions: Engineering &amp; Technology, MCA, Management.</li>
+          <li><b>Pay levels</b>: 7th CPC revision for university and college teachers (MHRD, now the Ministry of Education), as adopted in the UGC 2018 and AICTE 2019 regulations.</li>
+          <li>The draft UGC Regulations, 2025 were released for consultation in January 2025. If they are notified, update <code>rules.js</code>.</li>
+        </ul>
+        <p class="muted">Rules not checked automatically: relevance of the discipline, recognised university, regular-mode Ph.D., UGC research score (unless stated in the CV), age limits and reservation roster. Check these during scrutiny.</p>
+      </div>
+      <div id="rulesBody"></div>
+    </section>
+  </main>
+
+  <dialog id="dlg">
+    <div class="dlg">
+      <div class="dlghead"><div><h2 id="dName"></h2><p class="muted small" id="dMeta"></p></div><button class="btn ghost" id="btnClose">Close</button></div>
+      <div class="postcols" id="dPosts"></div>
+      <h3>Extracted details <small class="muted">— edit to correct; the results update instantly</small></h3>
+      <div class="fields" id="dFields"></div>
+      <div class="grid2">
+        <div><h3>⚠ Flags</h3><ul id="dNotes" class="small"></ul></div>
+        <div><h3>Specialisation</h3><p id="dSpecs" class="small"></p><h3>Advertisement match</h3><p id="dKeys" class="small"></p></div>
+      </div>
+      <details><summary>Show extracted CV text</summary><pre id="dText" class="cvtext"></pre></details>
+    </div>
+  </dialog>
+
+  <footer class="foot wrap">RUAS Faculty CV Screening · screening aid for the scrutiny committee</footer>
+  <script src="app.js"></script>
+</body>
+</html>
